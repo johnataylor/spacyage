@@ -101,18 +101,19 @@ Overall the resulting behavior is very natural for a multi-turn bot conversation
 
 ## How it Works
 
-We are using SpaCy to give us a parse tree of the English language text. SpaCy has a pretrained model of a number of different languages, here we are using the small English model. We did no additional training ourselves for this scenario. There are no specially trained intents here, instead the rules in the code work against the statistically produced parse tree.
+We are using SpaCy to give us a parse tree of the English language text. SpaCy has a pretrained model of a number of different languages, here we are using the small English model. We did no additional training ourselves for this scenario. There are no specially trained intents here, although, of course, SpaCy can be trained to recognize intents that is not what we were interested in here because we wanted to explore the implications of multi-turn conversations. In this code the logic works directly against the statistically produced parse tree.
 
-Once we have the parse tree we look for any verbs and then, if it is a verb we know how to work with, we pick up the dependent objects of that particular verb and for each according to our mapping we execute a call to our StateService. For the natural language verb "add" we execute a PUT and for "remove" we execute a DELETE. The mapping is easily extended in many different ways, for example, we could extend the number of verbs we understand, we could limit the number of nouns we accept, we could use lemmas, we could use similarity, basically there are lots of options.
+Once we have the parse tree we look for any verbs and then, if it is a verb we know how to work with, we pick up the dependent objects of that particular verb and for each according to our mapping we execute a call to our StateService. SpaCy gives us a rich object model and the code to traverse the structure it gives us is very straight forward.
 
-If the Bot does not find any verbs it concludes that the utterance is just a continuation of the previous utterance, reasonable given the nature of natural language, and so it just concatenates the text and reprocesses. If we were connecting this logic to a speech channel it would make sense to add a timeout to our willingness to concatenate.
+When the bot sees the verb "add" it executes a PUT and for "remove" it executes a DELETE. The mapping is easily extended in many different ways, for example, we could extend the number of verbs we understand, we could limit the number of nouns we accept, we could make our travsersal of the tree more forgiving, we could use lemmas, we could use similarity, and of course we could train our language model beyond what we have out of the box.
+
+If the Bot does not find any verbs it concludes that the utterance is just a continuation of the previous utterance, that is reasonable given the nature of natural language, and so it just concatenates the text and reprocesses. If we were connecting this logic to a speech channel it would make sense to add a timeout to our willingness to concatenate, after all we are attempting to capture natural language and natural language, especially when spoken, has a strong time component.
 
 ## Conclusion
 
 We have effectively modeled our bot as a protocol bridge between the protocol humans use to talk to each other, that of natural language verbs and their dependent objects, and the protocol computers use to talk to each other, that of network friendly assertions and retractions.
 
-There is lots more fun to be had. The next steps, and this is before we even get into additional training, include improving the mapping and optimizing our network protocols.
+There is lots more fun to be had. The next steps include improving the mapping and optimizing our network protocols.
 
 As we make the mapping of verbs and nouns more flexible it would be a good implementation choice to introduce some more data driven logic. For the network, RDF and specifically JSON-LD would be a natural choice for representing batches of assertions and retractions.
-
 
