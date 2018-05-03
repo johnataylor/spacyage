@@ -1,7 +1,7 @@
 # spacyage
-Experiments with building Bots with SpaCy
+Experiments with building Bots with [SpaCy](https://spacy.io/)
 
-You will need Python and Node. And you will need the Bot Framework Emulator.
+You will need Python and Node. And you will need the Bot Framework Emulator. This is an application of the [Bot Builder Framework](https://github.com/Microsoft/botbuilder-python).
 
 ## Install Spacy
 
