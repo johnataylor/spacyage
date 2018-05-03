@@ -109,8 +109,10 @@ If the Bot does not find any verbs it concludes that the utterance is just a con
 
 ## Conclusion
 
-We have effectively modeled our bot as a protocol bridge between the protocol humans use to talk to each other, that of natural language verbs and dependent objects, and the protocol computers use to talk to each other, that of network friendly assertions and retractions.
+We have effectively modeled our bot as a protocol bridge between the protocol humans use to talk to each other, that of natural language verbs and their dependent objects, and the protocol computers use to talk to each other, that of network friendly assertions and retractions.
 
-There is lots more fun to be had. The next steps, and this is before we even get into additional training, include improving the mapping and optimizing our network protocols. As we make the mapping of verbs and nouns more flexible it would be a good implementation choice to introduce some more data driven logic. For the network, RDF and specifically JSON-LD would be a natural choice for representing batches of assertions and retractions.
+There is lots more fun to be had. The next steps, and this is before we even get into additional training, include improving the mapping and optimizing our network protocols.
+
+As we make the mapping of verbs and nouns more flexible it would be a good implementation choice to introduce some more data driven logic. For the network, RDF and specifically JSON-LD would be a natural choice for representing batches of assertions and retractions.
 
 
