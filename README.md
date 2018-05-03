@@ -7,7 +7,7 @@ This is an application of the [Bot Builder Framework](https://github.com/Microso
 
 ## Install Spacy
 
-On windows:
+There are full instructions on the SpaCy web site, but for a quick start on windows:
 
 Create and activate a Python Virtual Environment:
 
