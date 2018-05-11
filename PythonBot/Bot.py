@@ -31,23 +31,26 @@ def find_obj_for_verb(verb):
     return None
 
 def form_put(noun):
-    conn = http.client.HTTPConnection("localhost", 8080)
+    conn = http.client.HTTPConnection("0.0.0.0", 8080)
     conn.request("PUT", "/form/" + noun, None)
     response = conn.getresponse()
     return response.status == 201
 
+
+
 def form_del(noun):
-    conn = http.client.HTTPConnection("localhost", 8080)
+    conn = http.client.HTTPConnection("0.0.0.0", 8080)
     conn.request("DELETE", "/form/" + noun, None)
     response = conn.getresponse()
     return response.status == 200
 
 def form_get():
-    conn = http.client.HTTPConnection("localhost", 8080)
+    conn = http.client.HTTPConnection("0.0.0.0", 8080)
     conn.request("GET", "/form", None)
     response = conn.getresponse()
     data = response.read().decode('utf-8')
     return data
+
 
 def process_verb(verb, reply):
 
@@ -115,8 +118,17 @@ APP_ID = ''
 APP_PASSWORD = ''
 
 state = {}
+# ----------------------------------------------
+# Incoming address from the Bot Connector service 
+#  If you are testing in a docker container, 
+#  set this to your docker bridge. (ie, 172.17.0.1)
+# Otherwise, set to Bot framework.
+# ----------------------------------------------
+class BotConnectorSvc:
+    incoming_address = "192.168.0.1"
 
 class BotRequestHandler(http.server.BaseHTTPRequestHandler):
+        
 
     @staticmethod
     def __create_reply_activity(request_activity, text):
@@ -128,14 +140,15 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
             from_property=request_activity.recipient,
             text=text,
             service_url=request_activity.service_url)
-
+    
+    
     def __handle_conversation_update_activity(self, activity):
         self.send_response(202)
         self.end_headers()
         if activity.members_added[0].id != activity.recipient.id:
             credentials = MicrosoftAppCredentials(APP_ID, APP_PASSWORD)
             reply = BotRequestHandler.__create_reply_activity(activity, 'Hello and welcome to The SpaCy Age!')
-            connector = ConnectorClient(credentials, base_url=reply.service_url)
+            connector = ConnectorClient(credentials, base_url=reply.service_url.replace('localhost', BotConnectorSvc.incoming_address ))
             connector.conversations.send_to_conversation(reply.conversation.id, reply)
 
     def __handle_message_activity(self, activity):
@@ -144,13 +157,16 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
 
         def replyFunction (replyText):
             credentials = MicrosoftAppCredentials(APP_ID, APP_PASSWORD)
-            connector = ConnectorClient(credentials, base_url=activity.service_url)
+            connector = ConnectorClient(credentials, base_url=activity.service_url.replace('localhost', BotConnectorSvc.incoming_address))
             reply = BotRequestHandler.__create_reply_activity(activity, replyText)
             connector.conversations.send_to_conversation(reply.conversation.id, reply)
 
         process_utterance(activity.text, replyFunction)
 
+    
     def __handle_authentication(self, activity):
+        # Capture Bot Connector Service address 
+        BotConnectorSvc.incoming_address = self.client_address[0]
         credential_provider = SimpleCredentialProvider(APP_ID, APP_PASSWORD)
         loop = asyncio.new_event_loop()
         try:
@@ -185,7 +201,8 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
 try:
-    SERVER = http.server.HTTPServer(('localhost', 9000), BotRequestHandler)
+    # Listen on all available nics
+    SERVER = http.server.HTTPServer(('0.0.0.0', 9000), BotRequestHandler)
     print('Started http server')
     SERVER.serve_forever()
 except KeyboardInterrupt:

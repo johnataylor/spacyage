@@ -1,7 +1,11 @@
 # spacyage
 Experiments with building Bots with [SpaCy](https://spacy.io/)
 
-You will need Python and Node. And you will need the [Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator)
+You will need:
+- Python 3.6
+- Node
+- [Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator)
+- Docker (optional)
 
 This is an application of the [Bot Builder Framework](https://github.com/Microsoft/botbuilder-python).
 
@@ -117,3 +121,53 @@ There is lots more fun to be had. The next steps include improving the mapping a
 
 As we make the mapping of verbs and nouns more flexible it would be a good implementation choice to introduce some more data driven logic. For the network, RDF and specifically JSON-LD would be a natural choice for representing batches of assertions and retractions.
 
+## Running Docker
+Instructions below for building on Windows host, but tested with Centos. 
+
+### Build images
+Base image is Centos7..
+
+```
+cd .\spacyage\docker\baseimage
+docker build --rm -t local/cent7-latest .
+```
+
+Create spacy bot image.  What's in this image?  
+- Spacy Bot Service.  Python based bot service listening on port 9000 
+- Node service.  This acts as a cache for stuff outside the bot service
+ listening on port 8080.
+```
+cd .\spacyage
+docker build --rm -t local/spacyage -f docker\spacybotimage\Dockerfile .
+```
+
+### Run bot
+```
+docker run -d local/spacyage
+```
+
+
+#### Example: See container running.  Note: Port 9000 exposed
+```
+DAVE TODO
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+4c73cde9a306        local/simple_bot    "python3.6 /simple..."   2 minutes ago       Up 2 minutes        8080/tcp            quirky_raman
+```
+#### Example: Get ip address
+
+```
+DAVE TODO
+$ docker inspect 
+ docker inspect 4c73cde9a306
+[
+ …
+        "NetworkSettings": {
+            "IPAddress": "172.17.0.2",
+```
+
+#### Example: Test with Bot Emulator
+
+```
+DAVE TODO
+```
