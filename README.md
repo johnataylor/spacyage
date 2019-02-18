@@ -117,3 +117,7 @@ There is lots more fun to be had. The next steps include improving the mapping a
 
 As we make the mapping of verbs and nouns more flexible it would be a good implementation choice to introduce some more data driven logic. For the network, RDF and specifically JSON-LD would be a natural choice for representing batches of assertions and retractions.
 
+It should be pointed out that the fact that we are using English as our model is not particularly fundamental. Just about every language in common usage share the same univeral core. In other words the code didn't actually depend on English it depended on the universal language concepts of noun and verb.
+
+Another area of investigation is training. So far the off the shelf model worked surprisingly well, however, the parse tree is statistically generated and can contain mistakes. For example, try "add mushroom and jump in the air" SpaCy gets confused and thinks "jump" was another noun and therefore somethng to add to our pizza. Adding the word "_then_ jump in the air" fixed things. But clearly the model could have been more appropriate to our domain, this is where addionitional, domain specific, training would help. And once we are in the business of training it turns out we might not actually care that much about traditional language structure, in other words, all we are trying to do is map langauge to rest calls. We could train to produce a dependency try of intent, and naturally multi-intent, where those intents corresponded more directly to our rest calls.
+
