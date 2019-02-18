@@ -151,9 +151,13 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
         process_utterance(activity.text, replyFunction)
 
     def __handle_authentication(self, activity):
+        print('__handle_authentication')
         credential_provider = SimpleCredentialProvider(APP_ID, APP_PASSWORD)
         loop = asyncio.new_event_loop()
         try:
+            auth = self.headers.get("Authorization")
+            if auth == None:
+                return True
             loop.run_until_complete(JwtTokenValidation.assert_valid_activity(
                 activity, self.headers.get("Authorization"), credential_provider))
             return True
