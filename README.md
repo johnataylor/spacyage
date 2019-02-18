@@ -105,6 +105,8 @@ We are using SpaCy to give us a parse tree of the English language text. SpaCy h
 
 Once we have the parse tree we look for any verbs and then, if it is a verb we know how to work with, we pick up the dependent objects of that particular verb and for each according to our mapping we execute a call to our StateService. SpaCy gives us a rich object model and the code to traverse the structure it gives us is very straight forward.
 
+SpaCy provides tools to visualize the underlying data structures, for example, [add bacon and remove the cheese](https://explosion.ai/demos/displacy?text=add%20bacon%20and%20remove%20the%20cheese&model=en_core_web_sm&cpu=1&cph=1) 
+
 When the bot sees the verb "add" it executes a PUT and for "remove" it executes a DELETE. The mapping is easily extended in many different ways, for example, we could extend the number of verbs we understand, we could limit the number of nouns we accept, we could make our travsersal of the tree more forgiving, we could use lemmas, we could use similarity, and of course we could train our language model beyond what we have out of the box.
 
 If the Bot does not find any verbs it concludes that the utterance is just a continuation of the previous utterance, that is reasonable given the nature of natural language, and so it just concatenates the text and reprocesses. If we were connecting this logic to a speech channel it would make sense to add a timeout to our willingness to concatenate, after all we are attempting to capture natural language and natural language, especially when spoken, has a strong time component.
